@@ -5,13 +5,22 @@ from PIL import Image, ImageFont, ImageDraw
 from font_source_serif_pro import SourceSerifProSemibold
 from font_source_sans_pro import SourceSansProSemibold
 
-def main(argv):
-	hype('Ready...')
+# TODO:
+# centre and relow text/font to fit screen
+# pick interesting words to hype
 
+def main(argv):
 	import speech_recognition as sr
 
+	# Load our stop words
+	f = open('stoplist.txt', 'r')
+	stoplist = f.readlines()
+	f.close()
+
+	print(stoplist)
+
 	r = sr.Recognizer()
-	with sr.Microphone(device_index = 2) as source:
+	with sr.Microphone() as source:
 		r.adjust_for_ambient_noise(source) 
 
 		print("Speak Anything :")
@@ -20,10 +29,16 @@ def main(argv):
 		try:
 			text = r.recognize_google(audio)
 			print("You said : {}".format(text))
+
+			for stopword in stoplist:
+				if stopword in text:
+					text.replace(stopword,'')
+
 			words = text.split(' ')
-			word = random.choice(words)
+			word = '"' + random.choice(words) + '"'
+
 			hype(word)
-			print(word)
+
 		except Exception as e:
 			print(e)
 		#except sr.UnknownValueError:
@@ -43,6 +58,8 @@ def main(argv):
 	#    print("Sphinx error; {0}".format(e))
 
 def hype(word):
+	print(word)
+
 	# Set up the correct display and scaling factors
 	inky_display = InkyPHAT('black')
 	inky_display.set_border(inky_display.WHITE)
