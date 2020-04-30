@@ -1,4 +1,4 @@
-import sys, random
+import sys, random, time
 from inky import InkyPHAT
 
 from PIL import Image, ImageFont, ImageDraw
@@ -18,42 +18,49 @@ def main(argv):
 	file.close()
 
 	r = sr.Recognizer()
-	with sr.Microphone() as source:
-		r.adjust_for_ambient_noise(source) 
 
-		print("Speak Anything :")
-		audio = r.listen(source)
+	while True:
+		with sr.Microphone() as source:
+			r.adjust_for_ambient_noise(source) 
 
-		try:
-			text = r.recognize_google(audio)
-			print("You said : {}".format(text))
+			print("Speak Anything :")
+			audio = r.listen(source)
 
-			for stopword in stoplist:
-				if stopword in text:
-					text.replace(stopword,'')
+			try:
+				text = r.recognize_google(audio)
+				print("You said : {}".format(text))
 
-			words = text.split(' ')
-			word = '"' + random.choice(words) + '"'
+				for stopword in stoplist:
+					if stopword in text.split():
+						print(stopword)
+						text = text.replace(stopword,'').strip()
+				print("We said : {}".format(text))
 
-			hype(word)
+				words = text.split(' ')
+				word = random.choice(words)
 
-		except Exception as e:
-			print(e)
+				hype(word)
+
+			except Exception as e:
+				print(e)
+			#except sr.UnknownValueError:
+			#    print("Google Speech Recognition could not understand audio")
+			#except sr.RequestError as e:
+			#    print("Could not request results from Google Speech Recognition service; {0}".format(e))
+
+		# to record the audio for debugging
+		#with open("audio_file.wav", "wb") as file:
+		#    file.write(audio.get_wav_data())
+		# recognize speech using Sphinx
+		#try:
+		#    print("Sphinx thinks you said " + r.recognize_sphinx(audio, language='en-GB'))
 		#except sr.UnknownValueError:
-		#    print("Google Speech Recognition could not understand audio")
+		#    print("Sphinx could not understand audio")
 		#except sr.RequestError as e:
-		#    print("Could not request results from Google Speech Recognition service; {0}".format(e))
+		#    print("Sphinx error; {0}".format(e))
 
-	# to record the audio for debugging
-	#with open("audio_file.wav", "wb") as file:
-	#    file.write(audio.get_wav_data())
-	# recognize speech using Sphinx
-	#try:
-	#    print("Sphinx thinks you said " + r.recognize_sphinx(audio, language='en-GB'))
-	#except sr.UnknownValueError:
-	#    print("Sphinx could not understand audio")
-	#except sr.RequestError as e:
-	#    print("Sphinx error; {0}".format(e))
+		print('Sleepee')
+		time.sleep(60)
 
 # Adapted from the Pimoroni inkyWhat examples: https://github.com/pimoroni/inky
 def hype(word):
