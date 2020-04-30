@@ -13,11 +13,9 @@ def main(argv):
 	import speech_recognition as sr
 
 	# Load our stop words
-	f = open('stoplist.txt', 'r')
-	stoplist = f.readlines()
-	f.close()
-
-	print(stoplist)
+	file = open('./stoplist.txt', 'r')
+	stoplist = file.read().splitlines()
+	file.close()
 
 	r = sr.Recognizer()
 	with sr.Microphone() as source:
@@ -57,12 +55,13 @@ def main(argv):
 	#except sr.RequestError as e:
 	#    print("Sphinx error; {0}".format(e))
 
+# Adapted from the Pimoroni inkyWhat examples: https://github.com/pimoroni/inky
 def hype(word):
 	print(word)
 
 	# Set up the correct display and scaling factors
 	inky_display = InkyPHAT('black')
-	inky_display.set_border(inky_display.WHITE)
+	inky_display.set_border(inky_display.BLACK)
 	# inky_display.set_rotation(180)
 
 	w = inky_display.WIDTH
@@ -73,10 +72,33 @@ def hype(word):
 	draw = ImageDraw.Draw(img)
 
 	# Load the fonts
-	font_size = 24
-
+	font_size = 44
 	font = ImageFont.truetype(SourceSansProSemibold, font_size)
-	draw.multiline_text((10, 10), word, fill=inky_display.BLACK, font=font, align="left")
+
+	padding = 20 
+	max_width = w - padding
+	max_height = h - padding
+
+	below_max_length = False
+	while not below_max_length:
+			p_w, p_h = font.getsize(word)  # Width and height of quote
+			p_h = p_h * (word.count("\n") + 1)   # Multiply through by number of lines
+
+			if p_h < max_height:
+					below_max_length = True              # The quote fits! Break out of the loop.
+
+			else:
+					font_size = font_size - 2
+					font = ImageFont.truetype(SourceSansProSemibold, font_size)
+
+					continue
+
+	# x- and y-coordinates for the top left of the quote
+	#word_x = (w - max_width) / 2
+	word_x = (max_width - p_w) / 2
+	word_y = (max_height - p_h) / 2
+
+	draw.multiline_text((word_x, word_y), word, fill=inky_display.BLACK, font=font, align="left")
 
 	# Display the completed canvas on Inky wHAT
 	inky_display.set_image(img)
