@@ -1,3 +1,4 @@
+import sys, random
 from inky import InkyPHAT
 
 from PIL import Image, ImageFont, ImageDraw
@@ -19,10 +20,16 @@ def main(argv):
 		try:
 			text = r.recognize_google(audio)
 			print("You said : {}".format(text))
-			#words = text.split(' ')
-			#word = random.choice(words)
-			#hype(word)
-			#print(word)
+			words = text.split(' ')
+			word = random.choice(words)
+			hype(word)
+			print(word)
+		except Exception as e:
+			print(e)
+		#except sr.UnknownValueError:
+		#    print("Google Speech Recognition could not understand audio")
+		#except sr.RequestError as e:
+		#    print("Could not request results from Google Speech Recognition service; {0}".format(e))
 
 	# to record the audio for debugging
 	#with open("audio_file.wav", "wb") as file:
