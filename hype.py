@@ -32,14 +32,14 @@ def main(argv):
 
 				for stopword in stoplist:
 					if stopword in text.split():
-						print(stopword)
 						text = text.replace(stopword,'').strip()
 				print("We said : {}".format(text))
 
 				words = text.split(' ')
 				word = random.choice(words)
 
-				hype(word)
+				if word:
+					hype(word)
 
 			except Exception as e:
 				print(e)
