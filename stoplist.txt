@@ -1,3 +1,4 @@
+a
 about
 above
 across
@@ -160,6 +161,7 @@ how
 however
 i
 if
+i'll
 important
 in
 interest
@@ -393,6 +395,7 @@ was
 way
 ways
 we
+we've
 well
 wells
 went

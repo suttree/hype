@@ -1,4 +1,4 @@
-import sys, random, time
+import sys, random, time, re
 from inky import InkyPHAT
 
 from PIL import Image, ImageFont, ImageDraw
@@ -19,6 +19,9 @@ def main(argv):
 
 	r = sr.Recognizer()
 
+	print(sr.Microphone.list_microphone_names())
+	print('---')
+
 	while True:
 		with sr.Microphone() as source:
 			r.adjust_for_ambient_noise(source) 
@@ -28,11 +31,13 @@ def main(argv):
 
 			try:
 				text = r.recognize_google(audio)
+				text = text.lower()
 				print("You said : {}".format(text))
 
 				for stopword in stoplist:
 					if stopword in text.split():
-						text = text.replace(stopword,'').strip()
+						#text = text.replace(stopword,'').strip()
+						text = re.sub(stopword, '', text.strip())
 				print("We said : {}".format(text))
 
 				words = text.split(' ')
@@ -60,7 +65,7 @@ def main(argv):
 		#    print("Sphinx error; {0}".format(e))
 
 		print('Sleepee')
-		time.sleep(60)
+		time.sleep(10)
 
 # Adapted from the Pimoroni inkyWhat examples: https://github.com/pimoroni/inky
 def hype(word):
