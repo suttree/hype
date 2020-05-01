@@ -6,8 +6,7 @@ from font_source_serif_pro import SourceSerifProSemibold
 from font_source_sans_pro import SourceSansProSemibold
 
 # TODO:
-# centre and relow text/font to fit screen
-# pick interesting words to hype
+# use Google speech? recognize_google_cloud() and https://cloud.google.com/speech-to-text/
 
 def main(argv):
 	import speech_recognition as sr
@@ -24,9 +23,8 @@ def main(argv):
 
 	while True:
 		with sr.Microphone() as source:
-			r.adjust_for_ambient_noise(source) 
+			#r.adjust_for_ambient_noise(source) 
 
-			print("Speak Anything :")
 			audio = r.listen(source)
 
 			try:
@@ -40,8 +38,9 @@ def main(argv):
 						text = re.sub(stopword, '', text.strip())
 				print("We said : {}".format(text))
 
-				words = text.split(' ')
+				words = text.split()
 				word = random.choice(words)
+				print("We picked: {}".format(word))
 
 				if word:
 					hype(word)
@@ -64,8 +63,7 @@ def main(argv):
 		#except sr.RequestError as e:
 		#    print("Sphinx error; {0}".format(e))
 
-		print('Sleepee')
-		time.sleep(10)
+		time.sleep(5)
 
 # Adapted from the Pimoroni inkyWhat examples: https://github.com/pimoroni/inky
 def hype(word):
