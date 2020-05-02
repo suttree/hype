@@ -8,7 +8,13 @@ from font_source_sans_pro import SourceSansProSemibold
 creds = open('./google_cloud_speech_credentials.json') 
 GOOGLE_CLOUD_SPEECH_CREDENTIALS = json.load(creds)
 
+# TODO: exponential backoff and retry if there's no speech detected, and reset n if there is speech detected
+# n = n + 0.1
+# min(64, (2 ** n)) + (random.randint(0, 1000) / 1000.0)
+
 def main(argv):
+	n = 0.0
+
 	import speech_recognition as sr
 
 	# Load our stop words
@@ -26,8 +32,10 @@ def main(argv):
 			r.adjust_for_ambient_noise(source) 
 
 			try:
-				# Wait 2 seconds for speech, listen for 5 seconds to detect a phrase
-				audio = r.listen(source, 5, 10)
+				# Wait n seconds for speech, listen for n seconds to detect a phrase
+				audio = r.listen(source, 10, 10)
+
+				# Wait until we hit a WaitTimeoutError exception
 				#audio = r.listen(source)
 
 				try:
@@ -48,6 +56,7 @@ def main(argv):
 
 					if word:
 						hype(word)
+						n = 0.0 # reset the sleep timer
 
 				except Exception as e:
 					print(e)
@@ -70,8 +79,15 @@ def main(argv):
 			except sr.WaitTimeoutError:
 				print("wait timeout")
 
-		print('Done listening')
-		time.sleep(5)
+
+		#time.sleep(5)
+
+		n = n + 0.5
+		timer = min(64, (2 ** n)) + (random.randint(0, 1000) / 1000.0)
+
+		print("Done listening. Waiting for {} secs".format(timer))
+
+		time.sleep(timer)
 
 # Adapted from the Pimoroni inkyWhat examples: https://github.com/pimoroni/inky
 def hype(word):
