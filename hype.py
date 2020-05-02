@@ -21,55 +21,57 @@ def main(argv):
 	print(sr.Microphone.list_microphone_names())
 	print('---')
 
-	with sr.Microphone() as source:
-		r.adjust_for_ambient_noise(source) 
-
-		try:
-			# Wait 2 seconds for speech, listen for 5 seconds to detect a phrase
-			audio = r.listen(source, 5, 10)
-			#audio = r.listen(source)
+	while True:
+		with sr.Microphone() as source:
+			r.adjust_for_ambient_noise(source) 
 
 			try:
-				#text = r.recognize_google(audio)
-				text = r.recognize_google_cloud(audio, credentials_json = json.dumps(GOOGLE_CLOUD_SPEECH_CREDENTIALS) )
-				text = text.lower()
-				print("You said : {}".format(text))
+				# Wait 2 seconds for speech, listen for 5 seconds to detect a phrase
+				audio = r.listen(source, 5, 10)
+				#audio = r.listen(source)
 
-				for stopword in stoplist:
-					if stopword in text.split():
-						print("Removing {}".format(stopword))
-						text = re.sub(r'\b{}\b'.format(stopword), '', text.strip())
-				print("We said : {}".format(text))
+				try:
+					#text = r.recognize_google(audio)
+					text = r.recognize_google_cloud(audio, credentials_json = json.dumps(GOOGLE_CLOUD_SPEECH_CREDENTIALS) )
+					text = text.lower()
+					print("You said : {}".format(text))
 
-				words = text.split()
-				word = random.choice(words)
-				print("We picked: {}".format(word))
+					for stopword in stoplist:
+						if stopword in text.split():
+							print("Removing {}".format(stopword))
+							text = re.sub(r'\b{}\b'.format(stopword), '', text.strip())
+					print("We said : {}".format(text))
 
-				if word:
-					hype(word)
+					words = text.split()
+					word = random.choice(words)
+					print("We picked: {}".format(word))
 
-			except Exception as e:
-				print(e)
-			#except sr.UnknownValueError:
-			#    print("Google Speech Recognition could not understand audio")
-			#except sr.RequestError as e:
-			#    print("Could not request results from Google Speech Recognition service; {0}".format(e))
+					if word:
+						hype(word)
 
-			# to record the audio for debugging
-			#with open("audio_file.wav", "wb") as file:
-			#    file.write(audio.get_wav_data())
-			# recognize speech using Sphinx
-			#try:
-			#    print("Sphinx thinks you said " + r.recognize_sphinx(audio, language='en-GB'))
-			#except sr.UnknownValueError:
-			#    print("Sphinx could not understand audio")
-			#except sr.RequestError as e:
-			#    print("Sphinx error; {0}".format(e))
+				except Exception as e:
+					print(e)
+				#except sr.UnknownValueError:
+				#    print("Google Speech Recognition could not understand audio")
+				#except sr.RequestError as e:
+				#    print("Could not request results from Google Speech Recognition service; {0}".format(e))
 
-		except sr.WaitTimeoutError:
-			print("wait timeout")
+				# to record the audio for debugging
+				#with open("audio_file.wav", "wb") as file:
+				#    file.write(audio.get_wav_data())
+				# recognize speech using Sphinx
+				#try:
+				#    print("Sphinx thinks you said " + r.recognize_sphinx(audio, language='en-GB'))
+				#except sr.UnknownValueError:
+				#    print("Sphinx could not understand audio")
+				#except sr.RequestError as e:
+				#    print("Sphinx error; {0}".format(e))
 
-	print('Done listening')
+			except sr.WaitTimeoutError:
+				print("wait timeout")
+
+		print('Done listening')
+		time.sleep(5)
 
 # Adapted from the Pimoroni inkyWhat examples: https://github.com/pimoroni/inky
 def hype(word):
