@@ -29,56 +29,51 @@ def main(argv):
 	print(sr.Microphone.list_microphone_names())
 	print('---')
 
-	while True:
-		with sr.Microphone() as source:
-			#r.adjust_for_ambient_noise(source) 
+	with sr.Microphone() as source:
+		r.adjust_for_ambient_noise(source) 
 
+		try:
 			# Wait 2 seconds for speech, listen for 5 seconds to detect a phrase
+			audio = r.listen(source, 2, 5)
+
 			try:
-				audio = r.listen(source, 2, 5)
+				text = r.recognize_google(audio)
+				text = text.lower()
+				print("You said : {}".format(text))
 
-				try:
-					text = r.recognize_google(audio)
-					text = text.lower()
-					print("You said : {}".format(text))
+				for stopword in stoplist:
+					if stopword in text.split():
+						print("Removing {}".format(stopword))
+						text = re.sub(r'\b{}\b'.format(stopword), '', text.strip())
+				print("We said : {}".format(text))
 
-					for stopword in stoplist:
-						if stopword in text.split():
-							print("Removing {}".format(stopword))
-							#text = text.replace(stopword,'').strip()
-							#text = re.sub(stopword, '', text.strip())
-							text = re.sub(r'\b{}\b'.format(stopword), '', text.strip())
-					print("We said : {}".format(text))
+				words = text.split()
+				word = random.choice(words)
+				print("We picked: {}".format(word))
 
-					words = text.split()
-					word = random.choice(words)
-					print("We picked: {}".format(word))
+				if word:
+					hype(word)
 
-					if word:
-						hype(word)
+			except Exception as e:
+				print(e)
+			#except sr.UnknownValueError:
+			#    print("Google Speech Recognition could not understand audio")
+			#except sr.RequestError as e:
+			#    print("Could not request results from Google Speech Recognition service; {0}".format(e))
 
-				except Exception as e:
-					print(e)
-				#except sr.UnknownValueError:
-				#    print("Google Speech Recognition could not understand audio")
-				#except sr.RequestError as e:
-				#    print("Could not request results from Google Speech Recognition service; {0}".format(e))
+			# to record the audio for debugging
+			#with open("audio_file.wav", "wb") as file:
+			#    file.write(audio.get_wav_data())
+			# recognize speech using Sphinx
+			#try:
+			#    print("Sphinx thinks you said " + r.recognize_sphinx(audio, language='en-GB'))
+			#except sr.UnknownValueError:
+			#    print("Sphinx could not understand audio")
+			#except sr.RequestError as e:
+			#    print("Sphinx error; {0}".format(e))
 
-				# to record the audio for debugging
-				#with open("audio_file.wav", "wb") as file:
-				#    file.write(audio.get_wav_data())
-				# recognize speech using Sphinx
-				#try:
-				#    print("Sphinx thinks you said " + r.recognize_sphinx(audio, language='en-GB'))
-				#except sr.UnknownValueError:
-				#    print("Sphinx could not understand audio")
-				#except sr.RequestError as e:
-				#    print("Sphinx error; {0}".format(e))
-
-			except sr.WaitTimeoutError:
-				print("wait timeout")
-
-		time.sleep(5)
+		except sr.WaitTimeoutError:
+			print("wait timeout")
 
 # Adapted from the Pimoroni inkyWhat examples: https://github.com/pimoroni/inky
 def hype(word):
