@@ -48,6 +48,9 @@ def main(argv):
 						if stopword in text.split():
 							print("Removing {}".format(stopword))
 							text = re.sub(r'\b{}\b'.format(stopword), '', text.strip())
+
+					text = re.sub('\.(?!\.)', '', text) # remove fullstops
+
 					print("We said : {}".format(text))
 
 					words = text.split()
@@ -82,7 +85,7 @@ def main(argv):
 
 		#time.sleep(5)
 
-		n = n + 0.5
+		n = n + 0.05
 		timer = min(300, (2 ** n)) + (random.randint(0, 1000) / 1000.0)
 
 		print("Done listening. Waiting for {} secs".format(timer))
