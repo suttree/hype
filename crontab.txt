@@ -1,0 +1,2 @@
+# m h  dom mon dow   command
+*/2 9-22 * * * /usr/bin/env python3 /home/pi/src/hype/hype.py > /tmp/cron.log 2>&1
