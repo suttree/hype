@@ -1,20 +1,12 @@
-import sys, random, time, re
+import sys, random, time, re, json
 from inky import InkyPHAT
 
 from PIL import Image, ImageFont, ImageDraw
 from font_source_serif_pro import SourceSerifProSemibold
 from font_source_sans_pro import SourceSansProSemibold
 
-# TODO:
-# use Google speech? recognize_google_cloud() and https://cloud.google.com/speech-to-text/
-#	GOOGLE_CLOUD_SPEECH_CREDENTIALS = r"""INSERT THE CONTENTS OF THE GOOGLE CLOUD SPEECH JSON CREDENTIALS FILE HERE"""
-#	try:
-#	    print("Google Cloud Speech recognition for \"numero\" with different sets of preferred phrases:")
-#	    print(r.recognize_google_cloud(audio_fr, credentials_json=GOOGLE_CLOUD_SPEECH_CREDENTIALS
-#
-# back off and retry sleep code? longer without speech, sleep for longer
-# sleep over night too
-# listen in background: https://github.com/Uberi/speech_recognition/blob/master/examples/background_listening.py
+creds = open('./google_cloud_speech_credentials.json') 
+GOOGLE_CLOUD_SPEECH_CREDENTIALS = json.load(creds)
 
 def main(argv):
 	import speech_recognition as sr
@@ -34,10 +26,12 @@ def main(argv):
 
 		try:
 			# Wait 2 seconds for speech, listen for 5 seconds to detect a phrase
-			audio = r.listen(source, 2, 5)
+			audio = r.listen(source, 5, 10)
+			#audio = r.listen(source)
 
 			try:
-				text = r.recognize_google(audio)
+				#text = r.recognize_google(audio)
+				text = r.recognize_google_cloud(audio, credentials_json = json.dumps(GOOGLE_CLOUD_SPEECH_CREDENTIALS) )
 				text = text.lower()
 				print("You said : {}".format(text))
 
@@ -74,6 +68,8 @@ def main(argv):
 
 		except sr.WaitTimeoutError:
 			print("wait timeout")
+
+	print('Done listening')
 
 # Adapted from the Pimoroni inkyWhat examples: https://github.com/pimoroni/inky
 def hype(word):

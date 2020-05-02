@@ -41,7 +41,7 @@ def callback(recognizer, audio):
 			hype(word)
 
 	except Exception as e:
-		print(e)
+		print("Could not request results from Google Speech Recognition service; {0}".format(e))
 	#except sr.UnknownValueError:
 	#    print("Google Speech Recognition could not understand audio")
 	#except sr.RequestError as e:
@@ -72,7 +72,7 @@ def main(argv):
 		r.adjust_for_ambient_noise(source) 
 
 	# start listening in the background
-	stop_listening = r.listen_in_background(m, callback)
+	stop_listening = r.listen_in_background(m, callback, 2)
 
 	time.sleep(60)
 
