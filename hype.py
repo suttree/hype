@@ -13,7 +13,7 @@ GOOGLE_CLOUD_SPEECH_CREDENTIALS = json.load(creds)
 # min(64, (2 ** n)) + (random.randint(0, 1000) / 1000.0)
 
 def main(argv):
-	hype('|')
+	hype('>')
 	n = 0.0
 
 	import speech_recognition as sr
@@ -91,10 +91,8 @@ def main(argv):
 
 		print("Done listening. Waiting for {} secs".format(timer))
 
-		if int(round(timer)) == 5:
-			hype('...  ')
-		else:
-			print( int(round(n)) )
+		if (timer > 5.0 and timer < 5.05):
+			hype('>')
 
 		time.sleep(timer)
 

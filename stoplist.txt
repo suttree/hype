@@ -13,6 +13,7 @@ already
 also
 although
 always
+am
 among
 an
 and
@@ -432,5 +433,6 @@ young
 younger
 youngest
 your
+you're
 yours
 z
