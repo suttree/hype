@@ -1,3 +1,13 @@
+# Hype!
+
+Just a dumb bot that listens for speech and picks a word it hears to display on a small eink screen. Made for those early WFH-2020 days...
+
+![Image of Hype](https://github.com/suttree/hype/blob/master/hype.jpg?raw=true)
+
+---
+
+## Notes / todo / misc
+
 Install from requirements.txt
 
 Basic python code setup:
